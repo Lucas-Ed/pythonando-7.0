@@ -117,3 +117,186 @@ MEDIA_URL = '/media/'
     <link href="{% static 'perfil/css/home.css' %}" rel="stylesheet">
 {% endblock %}
 ```
+
+- Crie a rota da view gerenciar em perfil/urls.py
+
+```bash
+path('gerenciar/', views.gerenciar, name="gerenciar"),
+```
+
+- Em tmplates crie o arquivo gerenciar.html, e cole o conteúdo do notion no arquivo gerenciar.html
+- Agora crie o arquivo de modelo do banco de dados em perfil/models, cole o conteúdo do notion, para criar as tabelas no banco de dados já padrão do django, use o comando migrate:
+ 
+```bash
+python manage.py migrate
+
+```
+
+- Para fazer a migração da model pro banco use o comando para criar o arquivo de migraçao:
+
+
+```bash
+python manage.py makemigrations
+
+```
+- Em sequida rode o comando para efetivar a migração da model.
+- Agora em perfil/admin importe a model, para podermos edita-la via painel do admin.
+```bash
+from .models import Conta, Categoria
+# Register your models here.
+admin.site.register(Conta)
+admin.site.register(Categoria)
+```
+
+- Agora cria suas credenciais para login no painel admin.
+
+```bash
+
+python manage.py createsuperuser
+```
+user: projeto
+password: projeto
+
+- Crie uma nova url em perfil/urls.py para poder fazer o input no banco:
+
+```bash
+path('cadastrar_banco/', views.cadastrar_banco, name="cadastrar_banco"),
+```
+- Crie a nova função em perfil/views.py view cadastrar_banco
+- Pegar os inputs do frontend e gravar no banco, pra isso vá em templates/gerenciar.html, na linha 41 modifique o action:
+
+```bash
+                                                       //enctype="",Permite enviar arquivo via form
+<form action="{% url 'cadastrar_banco' %}" method="POST" enctype='multipart/form-data'>{% csrf_token %}
+
+```
+- Importar a model em perfil/views.py, e importar o redirect:
+
+```bash
+// Adiciona o redirect junto com render
+from django.shortcuts import render, redirect
+from .models import Conta
+
+```
+- Em templates/gerenciar.html na linha 60 adicione o required no input para tornar o campo obrigatório
+
+```bash
+<input type="file" placeholder="Ícone" name="icone" required>
+
+```
+
+- Exibir mensagens de erros na perfil/views.py:
+```bash
+    # Mensagem de erro
+    if len(apelido.strip()) == 0 or len(valor.strip()) == 0:
+        return redirect('/perfil/gerenciar/')
+```
+- Exibir o alert de msg de erro usando o bootstrap, em core/settings.py
+
+```bash
+#Messages
+from django.contrib.messages import constants
+
+MESSAGE_TAGS = {
+    constants.DEBUG: 'alert-primary',
+    constants.ERROR: 'alert-danger',
+    constants.WARNING: 'alert-warning',
+    constants.SUCCESS: 'alert-success',
+    constants.INFO: 'alert-info ',
+}
+```
+
+- Em perfil/view.py fazer o import:
+```bash
+from django.contrib import messages
+from django.contrib.messages import constants
+```
+- Na própria view atualiza a função cadastrar_banco para exibir as mensagens:
+
+```bash
+def cadastrar_banco(request):
+    apelido = request.POST.get('apelido')
+    banco = request.POST.get('banco')
+    tipo = request.POST.get('tipo')
+    valor = request.POST.get('valor')
+    icone = request.FILES.get('icone')
+    # Mensagem de erro
+    if len(apelido.strip()) == 0 or len(valor.strip()) == 0:
+        messages.add_messages(request, constants.ERROR, 'Preencha todos os campos !!!')//Adicione esta linha
+        return redirect('/perfil/gerenciar/')
+    
+    conta = Conta(
+        apelido = apelido,
+        banco=banco,
+        tipo=tipo,
+        valor=valor,
+        icone=icone
+    )
+
+    conta.save()
+    messages.add_messages(request, constants.SUCCESS, 'Conta cadastrada com sucesso !!!')//Adicione esta linha
+    return redirect('/perfil/gerenciar/')
+
+```
+- Em templates/gerenciar.htlm, exiba as mensagens no html na linha:
+
+```bash
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+
+```
+- Busque todas as contas cadastradas e envie para o HTML, em perfil/views.py na função gerenciar, modifiquea:
+  
+```bash
+def gerenciar(request):
+    contas = Conta.objects.all()
+    return render(request, 'gerenciar.html', {'contas': contas,})
+
+```
+- Agora exiba as contas na linha 16 em templates/gerenciar.html
+
+
+- Adicione uma URL para os arquivos de media atualis o core/urls.py atualize-o:
+
+```bash
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('perfil/', include('perfil.urls')),
+    
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+```
+- Agora liste as contas a partir da linha 19 modifique o gerenciar.html:
+
+```bash
+
+{% for conta in contas %}
+    <div class="lista-contas-main">
+        <span><img width="10%" src="{{conta.icone.url}}">&nbsp&nbsp{{conta}}</span>
+
+        <span class="total-conta positivo ">R$ {{conta.valor}}</span>
+    </div>
+    <br>
+{% endfor %}
+```
+- Em perfil/vies.py, atualiza a função gerenciar.
+
+```bash
+def gerenciar(request):
+    contas = Conta.objects.all()
+    #total_contas = contas.aggregate(Sum('valor'))
+    total_contas = 0
+
+    for conta in contas:
+        total_contas += conta.valor
+    return render(request, 'gerenciar.html', {'contas': contas, 'total_contas': total_contas})
+
+```
