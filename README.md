@@ -32,7 +32,7 @@ Esse projeto foi desenvolvido com as seguintes tecnologias:
 ## 💻 Projeto
 
 o Projeto é uma aplicação de finanças pessoais.
-[Mais detalhes do projeto aqui.](https://grizzly-amaranthus-f6a.notion.site/AULA-1-PSW-7-0-5ecbdaa1e05343f0bf6498d0823d66a9)
+[Mais detalhes do projeto aqui.](https://grizzly-amaranthus-f6a.notion.site/PSW-7-0-a3282ff391074120b3daee721aa65f8f)
 
 
 
@@ -47,7 +47,7 @@ Você pode visualizar o layout do projeto através [DESSE LINK](https://www.figm
 ![](img/home.png) 
 <br>
 
-![]()
+![](img/gerenciar.png)
 
 <!--<br>
 <br>

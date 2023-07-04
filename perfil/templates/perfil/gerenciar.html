@@ -1,0 +1,117 @@
+{% extends 'bases/base.html' %}
+{% load static %}
+{% block 'title' %}Gerenciar{% endblock %}
+{% block 'head' %}
+
+    <link href="{% static 'css/home.css' %}" rel="stylesheet">
+    <link href="{% static 'css/gerenciar.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+{% block 'body' %}
+    <br>
+    <br>
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{message.tags}}">
+                    {{message}}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="row">
+            <div class="col-md-5">
+                <p class="fonte-destaque">Suas contas</p>
+                <hr>
+
+                <div class="contas">
+                        {% for conta in contas %}
+                            <div class="lista-contas-main">
+                                <span>
+                                    <img width="20px" height="20px" src="{{conta.icone.url}}" class="rounded-circle">
+                                    {{conta.apelido}}
+                                </span>
+                                <span class="total-conta positivo ">{{conta.valor}}&nbsp&nbsp&nbsp
+                                    {% include 'bases/buttons_crud_delete.html' with href_delete='excluir_banco' obj=conta.id  obj_titulo=conta.apelido %}
+                                </span>
+                            </div>
+                        <br>
+                        {% endfor %}
+                </div>
+
+                <hr>
+                <span class="fonte-destaque">Total:</span>
+                <span class="positivo total-conta font-destaque"> R$ {{total_conta}}</span>
+            </div>
+
+            <div class="col-md-2"></div>
+
+            <div class="col-md-5">
+                <p class="fonte-destaque">Nova conta</p>
+                <form action="{%url 'cadastrar_banco' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label>Apelido</label>
+                    {{forms_conta.apelido}}
+
+                    <br>
+                    <label>Banco</label>
+                    {{forms_conta.banco}}
+                    <br>
+                    <label>Tipo</label>
+                    {{forms_conta.tipo}}
+                    <br>
+                    <label>Valor</label>
+                    {{forms_conta.valor}}
+                    <br>
+                    {{ forms_conta.icone }}
+                    <br>
+                    <br>
+                    <input style="width: 100%" type="submit" class="botao-principal">
+                </form>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-md-5">
+                <span class="fonte-destaque">Nova categoria</span>
+
+                <form action="{% url 'cadastrar_categoria' %}" method="POST">
+                    {%csrf_token%}
+                    <label>Categoria</label>
+                    {{forms_categoria.categoria}}
+                    <br>
+                    {{forms_categoria.essencial}}<label class="positivo">&nbspEssencial</label>
+                    <br>
+                    <br>
+                    <input style="width: 100%" type="submit" class="botao-principal" value="Adicionar">
+                </form>
+            </div>
+
+            <div class="col-md-2">
+            </div>
+
+            <div class="col-md-5">
+                <span class="fonte-destaque">Suas categoria</span>
+                <br>
+                <div class="contas">
+
+                    {% for categoria in categorias %}
+
+                        <div class="lista-contas-main">
+                            <span id="categoria-info">{{categoria.categoria}}</span>
+                            {% if categoria.essencial %}
+
+                                <span class="total-conta"><a href="{% url 'atualizar_categoria' categoria.pk %}"><img width="20px" height="20px" src="{% static 'img/check.png' %}"></a></span>
+                            {% else %}
+                                <span class="total-conta"><a href="{% url 'atualizar_categoria' categoria.pk %}"><img width="20px" height="20px" src="{% static 'img/exit.png' %}"></a></span>
+                            {% endif %}
+                        </div>
+                        <br>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

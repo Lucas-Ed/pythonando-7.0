@@ -1,71 +1,78 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from .models import Conta, Categoria
-from django.contrib import messages
 from django.contrib.messages import constants
+from django.core.checks import messages
+from django.db import models
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
+from django.views import View
+from django.views.generic import TemplateView, CreateView, DeleteView, UpdateView
+
+from perfil.forms import ContaForm, CategoriaForm
+from perfil.models import Conta, Categoria
+
 
 # Create your views here.
-def home(request):
-    return render(request, 'home.html')
+class HomePerfilView(TemplateView):
+    template_name = 'perfil/home.html'
 
-def gerenciar(request):
-    contas = Conta.objects.all()
-    #total_contas = contas.aggregate(Sum('valor'))
-    categorias = Categoria.objects.all()
-    total_contas = 0
+    def get_context_data(self, **kwargs):
+        context = super(HomePerfilView, self).get_context_data(**kwargs)
 
-    for conta in contas:
-        total_contas += conta.valor
-    return render(request, 'gerenciar.html', {'contas': contas, 'total_contas': total_contas, 'categorias': categorias})
+        context['contas'] = Conta.objects.all()
 
-def cadastrar_banco(request):
-    apelido = request.POST.get('apelido')
-    banco = request.POST.get('banco')
-    tipo = request.POST.get('tipo')
-    valor = request.POST.get('valor')
-    icone = request.FILES.get('icone')
-    # Mensagem de erro
-    if len(apelido.strip()) == 0 or len(valor.strip()) == 0:
-        messages.add_messages(request, constants.ERROR, 'Preencha todos os campos !!!')
-        return redirect('/perfil/gerenciar/')
-    
-    conta = Conta(
-        apelido = apelido,
-        banco=banco,
-        tipo=tipo,
-        valor=valor,
-        icone=icone
-    )
+        context['total_conta'] = Conta.objects.aggregate(models.Sum('valor'))['valor__sum']
 
-    conta.save()
-    messages.add_messages(request, constants.SUCCESS, 'Conta cadastrada com sucesso !!!')
-    return redirect('/perfil/gerenciar/')
+        context['categorias'] = Categoria.objects.all()
 
-def deletar_banco(request, id):
-    conta = Conta.objects.get(id=id)
-    conta.delete()
-    messages.add_messages(request, constants.SUCCESS, 'Conta Deletada com sucesso !!!')
-    return redirect('/perfil/gerenciar/')
+        return context
 
-def cadastrar_categoria(request):
-    nome = request.POST.get('categoria')
-    essencial = bool(request.POST.get('essencial'))
 
-    categoria = Categoria(
-        categoria=nome,
-        essencial=essencial
-    )
+class GerenciarView(TemplateView):
+    template_name = 'perfil/gerenciar.html'
 
-    categoria.save()
+    def get_context_data(self, **kwargs):
+        context = super(GerenciarView, self).get_context_data(**kwargs)
 
-    messages.add_message(request, constants.SUCCESS, 'Categoria cadastrada com sucesso')
-    return redirect('/perfil/gerenciar/')
+        context['contas'] = Conta.objects.all()
 
-def update_categoria(request, id):
-    categoria = Categoria.objects.get(id=id)
+        soma = Conta.objects.aggregate(total_conta=models.Sum('valor'))
+        context['total_conta'] = soma['total_conta']
 
+        context['categorias'] = Categoria.objects.all()
+
+        context['forms_conta'] = ContaForm()
+        context['forms_categoria'] = CategoriaForm()
+
+        return context
+
+class CadatrarBancoView(CreateView):
+    success_url = '/perfil/gerenciar/'
+    template_name = 'perfil/gerenciar.html'
+    model = Conta
+    form_class = ContaForm
+
+class DeletarBancoView(DeleteView):
+    model = Conta
+    success_url = reverse_lazy('gerenciar')
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+
+        return HttpResponseRedirect(self.get_success_url())
+
+class CadastrarCategoriaView(CreateView):
+    success_url = '/perfil/gerenciar/'
+    template_name = 'perfil/gerenciar.html'
+    model = Conta
+    form_class = CategoriaForm
+
+class AtualizarCategoriaView(View):
+    model = Categoria
+    success_url = reverse_lazy('gerenciar')
+    template_name = 'perfil/gerenciar.html'
+
+def atualizarCategoria(request, pk):
+    categoria = Categoria.objects.get(pk = pk)
     categoria.essencial = not categoria.essencial
-
     categoria.save()
-
-    return redirect('/perfil/gerenciar/')
+    return redirect('gerenciar')

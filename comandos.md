@@ -157,7 +157,45 @@ python manage.py createsuperuser
 user: projeto
 password: projeto
 
-- Crie uma nova url em perfil/urls.py para poder fazer o input no banco:
+- Se necessário alterar usuário do admin, execute o seguinte comando para acessar o shell interativo do Django:
+
+```bash
+python manage.py shell
+```
+- No shell interativo do Django, importe o modelo de usuário do Django:
+
+```bash
+from django.contrib.auth.models import User
+```
+- Use o método get() do modelo de usuário para obter o superusuário existente:
+
+```bash
+superuser = User.objects.get(username='admin')
+```
+Certifique-se de substituir 'admin' pelo nome de usuário correto do superusuário.
+
+- Agora você pode alterar as informações do superusuário conforme necessário. Por exemplo, para alterar a senha, você pode usar o método set_password():
+```bash
+superuser.set_password('nova_senha')
+```
+SSubstitua 'nova_senha' pela nova senha desejada.
+
+- Salve as alterações no superusuário:
+
+```bash
+superuser.save()
+```
+- Saia do shell interativo do Django:
+```bash
+exi()
+```
+- Caso queira alterar somente um novo usuário:
+```bash
+python manage.py createsuperuser
+```
+O comando irá solicitar algumas informações para configurar o superusuário. Você será solicitado a fornecer um nome de usuário, endereço de e-mail (opcional) e senha. Digite as informações solicitadas e pressione Enter.
+
+-  Crie uma nova url em perfil/urls.py para poder fazer o input no banco:
 
 ```bash
 path('cadastrar_banco/', views.cadastrar_banco, name="cadastrar_banco"),
