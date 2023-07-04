@@ -44,7 +44,7 @@ Você pode visualizar o layout do projeto através [DESSE LINK](https://www.figm
 
 ![]()
 
-<!-- ![](/img/habits.png) -->
+![](img/home.png) 
 <br>
 
 ![]()
