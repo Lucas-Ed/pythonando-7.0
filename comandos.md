@@ -1,4 +1,16 @@
 
+- Criar ambiente virtual
+
+```bash
+python -m venv venv
+```
+
+- Ativar ambiente virtual do python
+
+```bash
+ source venv/Scripts/Activate
+```
+
 ```bash
 pip install django && pip install pillow
 ```
