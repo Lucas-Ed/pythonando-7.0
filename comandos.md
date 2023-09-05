@@ -10,7 +10,7 @@ python -m venv venv
 ```bash
  source venv/Scripts/Activate
 ```
-
+- Instalar blibliotecas
 ```bash
 pip install django && pip install pillow
 ```
