@@ -59,7 +59,7 @@ python manage.py runserver
 
 - No novo app perfil criar as rotas, crie um novo arquivo urls.py:
 
-  ```bash
+```bash
   from django.urls import path
   from . import views
 
