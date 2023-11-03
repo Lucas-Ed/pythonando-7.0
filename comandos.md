@@ -8,7 +8,7 @@ python -m venv venv
 - Ativar ambiente virtual do python
 
 ```bash
- source venv/Scripts/Activate
+source venv/Scripts/Activate
 ```
 
 - Instalar blibliotecas
@@ -158,10 +158,6 @@ path('gerenciar/', views.gerenciar, name="gerenciar"),
 - Em tmplates crie o arquivo gerenciar.html, e cole o conteúdo do notion no arquivo gerenciar.html
 - Agora crie o arquivo de modelo do banco de dados em perfil/models, cole o conteúdo do notion, para criar as tabelas no banco de dados já padrão do django, use o comando migrate:
  
-```bash
-python manage.py migrate
-
-```
 
 - Para fazer a migração da model pro banco use o comando para criar o arquivo de migraçao:
 
@@ -171,6 +167,11 @@ python manage.py makemigrations
 
 ```
 - Em sequida rode o comando para efetivar a migração da model.
+
+```bash
+python manage.py migrate
+
+```
 - Agora em perfil/admin importe a model, para podermos edita-la via painel do admin.
 ```bash
 from .models import Conta, Categoria

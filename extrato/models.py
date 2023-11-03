@@ -1,7 +1,6 @@
 from django.db import models
-from perfil.models import Categoria, Conta
+from perfil.models import Categorias, Conta
 
-# Create your models here.
 class Valores(models.Model):
     choice_tipo = (
         ('E', 'Entrada'),
@@ -9,7 +8,7 @@ class Valores(models.Model):
     )
     
     valor = models.FloatField()
-    categoria = models.ForeignKey(Categoria, on_delete=models.DO_NOTHING)
+    categoria = models.ForeignKey(Categorias, on_delete=models.DO_NOTHING)
     descricao = models.TextField()
     data = models.DateField()
     conta = models.ForeignKey(Conta, on_delete=models.DO_NOTHING)

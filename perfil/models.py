@@ -1,36 +1,48 @@
 from django.db import models
+from datetime import datetime
 
-
-# Create your models here.
-
-class Categoria(models.Model):
-    categoria = models.CharField(max_length=100)
+class Categorias(models.Model):
+    categoria = models.CharField(max_length=50)
     essencial = models.BooleanField(default=False)
-    valor_planejado = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-
+    valor_planejado = models.FloatField()
+    
     def __str__(self):
         return self.categoria
+    
+    def total_gasto(self):
+        from extrato.models import Valores
+        valores = Valores.objects.filter(categoria__id = self.id).filter(data__month=datetime.now().month)
+        total_valor = 0
+        for valor in valores:
+            total_valor += valor.valor
+        return total_valor
 
+    def calcula_percentual_gasto_por_categoria(self):
+        
+        try:
+            return int((self.total_gasto() * 100) / self.valor_planejado)
+        except:
+            return 0
+        
 
 class Conta(models.Model):
     banco_choices = (
-        ('NUBANK', 'NUBANK'),
-        ('BANCO DO BRASIL', 'BANCO DO BRASIL'),
-        ('ITAU', 'ITAU'),
-        ('CAIXA', 'CAIXA'),
-        ('SANTANDER', 'SANTANDER'),
-        ('BRADESCO', 'BRADESCO'),
-    )
-    tipo_choices = (
-        ('pf', 'Pessoa Física'),
-        ('pj', 'Pessoa Jurídica'),
+        ('NU', 'Nubank'),
+        ('CE', 'Caixa econômica'),
+        ('ST', 'Santander'),
+        ('BB', 'Banco do Brasil')
     )
 
-    apelido = models.CharField(max_length=100)
-    banco = models.CharField(max_length=100, choices=banco_choices)
-    tipo = models.CharField(max_length=100, choices=tipo_choices)
-    valor = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    icone = models.ImageField(upload_to='icones', null=True, blank=True)
+    tipo_choices = (
+        ('pf', 'Pessoa física'),
+        ('pj', 'Pessoa jurídica'),
+    )
+
+    apelido = models.CharField(max_length=50)
+    banco = models.CharField(max_length=2, choices=banco_choices)
+    tipo = models.CharField(max_length=2, choices=tipo_choices)
+    valor = models.FloatField()
+    icone = models.ImageField(upload_to='icones')
 
     def __str__(self):
         return self.apelido
