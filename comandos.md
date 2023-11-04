@@ -11,6 +11,12 @@ python -m venv venv
 source venv/Scripts/Activate
 ```
 
+- Executar servidor
+
+```bash
+python manage.py runserver
+```
+
 - Instalar blibliotecas
 
 ```bash
@@ -37,11 +43,6 @@ TIME_ZONE = 'America/Sao_Paulo'
   path('perfil/', include('perfil.urls')),
 ```
 
-- Executar servidor
-
-```bash
-python manage.py runserver
-```
 
 - Criar um novo app
 

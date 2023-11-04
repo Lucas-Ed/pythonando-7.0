@@ -43,8 +43,8 @@ def cadastrar_banco(request):
     icone = request.FILES.get('icone')
     
     if len(apelido.strip()) == 0 or len(valor.strip()) == 0:
-       messages.add_message(request, constants.ERROR, 'Preencha todos os campos!')
-       return redirect('/perfil/gerenciar/')
+        messages.add_message(request, constants.ERROR, 'Preencha todos os campos!')
+        return redirect('/perfil/gerenciar/')
 
     conta = Conta(
         apelido=apelido,
@@ -71,7 +71,8 @@ def cadastrar_categoria(request):
 
     categoria = Categorias(
         categoria=nome,
-        essencial=essencial
+        essencial=essencial,
+        valor_planejado=0,
     )
 
     categoria.save()

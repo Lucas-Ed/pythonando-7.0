@@ -26,6 +26,8 @@ def novo_valor(request):
         conta = request.POST.get('conta')
         tipo = request.POST.get('tipo')
 
+        valor = valor.replace(',', '.')
+
         valores = Valores(
             valor=valor,
             categoria_id=categoria,
@@ -40,11 +42,11 @@ def novo_valor(request):
         conta = Conta.objects.get(id=conta)
 
         if tipo == "E":
-            conta.valor += int(valor)
+            conta.valor += float(valor)
             messages.add_message(request, constants.SUCCESS, 'Entrada cadastrada com sucesso')    
 
         elif tipo == "S":
-            conta.valor -= int(valor)
+            conta.valor -= float(valor)
             messages.add_message(request, constants.SUCCESS, 'Saída cadastrada com sucesso')
         
         conta.save()
