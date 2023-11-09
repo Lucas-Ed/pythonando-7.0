@@ -4,6 +4,8 @@
 
     <link href="{% static 'perfil/css/home.css' %}" rel="stylesheet">
     <link href="{% static 'perfil/css/gerenciar.css' %}" rel="stylesheet">
+    <link href="{% static 'perfil/css/return.css' %}" rel="stylesheet">
+
 
 {% endblock %}
 
@@ -16,6 +18,7 @@
                 <div class="alert {{ message.tags }}">{{ message }}</div>
             {% endfor %}
         {% endif %}
+
         <br>
         <span class="fonte-destaque">Adicionar entradas/saídas</span>
         <div class="row">
@@ -72,5 +75,6 @@
         </div>
 
     </div>
+
 
 {% endblock %}

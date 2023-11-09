@@ -134,3 +134,17 @@ Confira [aqui em breve.]()
 Esse projeto está sob a licença MIT.
 
 ---
+
+rotas do buttom voltar
+
+http://127.0.0.1:8000/perfil/gerenciar/
+
+http://127.0.0.1:8000/extrato/view_extrato/
+
+http://127.0.0.1:8000/planejamento/definir_planejamento/
+
+http://127.0.0.1:8000/planejamento/ver_planejamento/-esse
+
+http://127.0.0.1:8000/perfil/dashboard/
+
+http://127.0.0.1:8000/contas/ver_contas/
