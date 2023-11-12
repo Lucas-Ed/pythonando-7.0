@@ -76,6 +76,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
+CSRF_TRUSTED_ORIGINS = ['https://pythonando7-mtgllmpv.b4a.run']
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
