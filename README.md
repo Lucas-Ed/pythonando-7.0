@@ -125,7 +125,7 @@ admin -->
 
 ## Deploy do projeto
 
-Confira [aqui em breve.]()
+Confira [aqui.](https://pythonando7-mtgllmpv.b4a.run)
 ---
 
 
