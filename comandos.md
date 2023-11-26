@@ -16,7 +16,11 @@ source venv/Scripts/Activate
 ```bash
 python manage.py runserver
 ```
+- Gerar chave secreta
 
+```bash
+python manage.py generatesecretkey
+```
 - Instalar blibliotecas
 
 ```bash
